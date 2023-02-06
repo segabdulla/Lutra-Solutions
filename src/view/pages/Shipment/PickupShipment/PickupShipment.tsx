@@ -1,0 +1,156 @@
+import React, { useState, useEffect } from "react"
+import { Box, Button, Text } from '@mantine/core';
+import {
+    Plus,
+    CalendarEvent,
+    Trash
+} from 'tabler-icons-react';
+
+// Listing Table
+import PickupShipmentListing from "./PickupShipmentListing/PickupShipmentListing";
+// Create Modal
+import PickupShipmentCreate from "./PickupShipmentCreate/PickupShipmentCreate";
+// Delete Modal
+import PickupShipmentDelete from "./PickupShipmentDelete/PickupShipmentDelete";
+// Search Form
+import SearchForm from "./Search/Search";
+
+// Custom Component
+import OutlinedStyledSelect from "../../../../components/StyledSelect/OutlinedStyledSelect";
+import OutlinedStyledCalendar from "../../../../components/StyledCalendar/OutlinedStyledCalendar";
+import FilledStyledSelect from "../../../../components/StyledSelect/FilledStyledSelect";
+
+const PickupShipment = () =>{
+
+    const [isCreateModal, setIsCreateModal] = useState<boolean>(false);
+    const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
+    const [isCalendarModal, setIsCalendarModal] = useState<boolean>(false);
+    const [dateValue, setDateValue] = useState<Date>(new Date());
+    const [userType, setUserType] = useState<string>('');
+    const [shipmentType, setShipmentType] = useState<string>('Export');
+
+    return(
+    <>
+        <Box sx={(theme)=>({ 
+            borderRadius: 10,     
+            padding: 10,
+            background: theme.colorScheme !== "dark" ? "#ffffff" : theme.colors.dark[7]
+        })}>
+            <Box sx={() => ({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: "wrap",
+                padding: '20px 0',
+                gap: 30,
+                // '@media (max-width: 760px)': {
+                //     justifyContent: 'center',
+                //     flexDirection: 'column',
+                // }
+            })}>
+                <Box sx={()=>({
+                    flex: "2 1 0"
+                })}>
+                    <Button 
+                        leftIcon={<Plus size={18} />} 
+                        style={{
+                            borderRadius: 10, 
+                            minHeight: 45,
+                        }}
+                        onClick={() => {
+                            setIsCreateModal(true);
+                        }}
+                        >
+                        Create Trip
+                    </Button>
+                </Box>
+                <Box 
+                    sx={()=>({
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        '@media (max-width: 980px)': {
+                            // flexDirection: "column",
+                            flexWrap: "wrap"
+                        },
+                    })}
+                >
+                    <Box sx={()=>({
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 15
+                    })}>
+                        <Text sx={(theme)=>({
+                            color: theme.colorScheme === "dark" ? "#FFFFFF" : "#2D363A", 
+                            fontWeight: 600,
+                            fontSize: "18",
+                        })}>Sort by :</Text>
+                        <OutlinedStyledSelect 
+                            dataSet={["Vendor","Admin", "Driver",]}
+                            dropDownValue={userType}
+                            setDropDownValue={setUserType}/>
+                    </Box>
+                    <Button 
+                        onClick={() => setIsCalendarModal(true) }
+                        sx={(theme)=>({
+                            height: 45,
+                            width: 50,
+                            fontSize: 25,
+                            padding: 0,
+                            borderRadius: 10,
+                            color: theme.colorScheme === "dark" ? "#FFFFFF" : "#2D363A",
+                            background: theme.colorScheme === "dark" ? "#0c0d21" : "#F4F5F7",
+                            "&:hover":{
+                                color: theme.colorScheme === "dark" ? "#FFFFFF" : "#2D363A",
+                                background: theme.colorScheme === "dark" ? "#0c0d21" : "#F4F5F7"
+                            }
+                        })}
+                    >
+                        <CalendarEvent size={25} />
+                    </Button>
+                    <SearchForm />
+                    <Button 
+                        onClick={() => setIsDeleteModal(true) }
+                        sx={(theme)=>({
+                            height: 45,
+                            width: 50,
+                            fontSize: 25,
+                            padding: 0,
+                            borderRadius: 10,
+                            color: theme.colorScheme === "dark" ? "#FFFFFF" : "#8E9AA0",
+                            background: theme.colorScheme === "dark" ? "#0c0d21" : "#F4F5F7",
+                            "&:hover":{
+                                color: theme.colorScheme === "dark" ? "#FFFFFF" : "#8E9AA0",
+                                background: theme.colorScheme === "dark" ? "#0c0d21" : "#F4F5F7"
+                            }
+                        })}
+                    >
+                        <Trash size={25} />
+                    </Button>
+                    <FilledStyledSelect 
+                        dataSet={["Import","Export", "Cargo",]}
+                        dropDownValue={shipmentType}
+                        setDropDownValue={setShipmentType}
+                        defaultValue="Month" />
+                    </Box>
+                </Box>
+            <PickupShipmentListing/>
+        </Box>
+       { isCreateModal &&
+        <PickupShipmentCreate isCreateModal={isCreateModal} setIsCreateModal={setIsCreateModal} />
+       }
+       { isDeleteModal &&
+        <PickupShipmentDelete isOpen={isDeleteModal} setIsOpen={setIsDeleteModal} />
+       }
+       { isCalendarModal && 
+        <OutlinedStyledCalendar
+            isOpen={isCalendarModal}
+            setIsOpen={setIsCalendarModal}
+            dateValue={dateValue}
+            setDateValue={setDateValue}
+        />
+       }
+    </>
+)}
+
+export default PickupShipment
